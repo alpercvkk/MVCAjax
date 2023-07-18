@@ -1,0 +1,44 @@
+﻿
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+
+<select onchange="changeLike(event)">
+  <option selected value="null">Hepsi</option>
+  <option value="true">Beğenilenler</option>
+  <option value="false">Beğenilmeyenler</option>
+</select>
+
+<div id="productList">
+  @await Component.InvokeAsync("Product")
+</div>
+
+@section Scripts {
+
+  <script>
+
+    function changeLike(event){
+      const selectedValue = event.target.value; // true, false veya null gelicek
+
+      $.ajax({
+        method:'POST',
+        url:'Product/Filter', // bu url git view componenti tekrar ekrana bas.
+        data:selectedValue,
+        contentType:'application/json',
+        success:function(viewComponentResult){
+                console.log('result', viewComponentResult);
+                $("#productList").empty(); // id productList divin içini boşalt.
+                $("#productList").html(viewComponentResult); // id productList içerisine gelen güncel html contenti bas.
+        },
+        error:function(err){
+          console.log('err', err);
+        }
+
+      })
+    }
+
+  </script>
+  }
